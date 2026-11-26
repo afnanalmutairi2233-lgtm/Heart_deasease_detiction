@@ -107,7 +107,13 @@ with tab_models:
                 st.error(str(exc))
             else:
                 metrics = pd.DataFrame(
-                    [{"Model": name, **result["metrics"]} for name, result in bundle["results"].items()]
+                    [{
+                        "Model": name,
+                        "Accuracy": result["metrics"]["Accuracy"],
+                        "Precision (label 1)": result["metrics"]["Precision"],
+                        "Recall (label 1)": result["metrics"]["Recall"],
+                        "F1-score (label 1)": result["metrics"]["F1-score"],
+                    } for name, result in bundle["results"].items()]
                 )
                 st.caption(
                     f"Unique rows available: {bundle['model_rows']:,}; "
@@ -116,7 +122,12 @@ with tab_models:
                 )
                 st.dataframe(metrics.round(4), width="stretch", hide_index=True)
                 selected = st.selectbox("Confusion matrix model", list(bundle["results"]))
-                cm = bundle["results"][selected]["confusion_matrix"]
+                selected_result = bundle["results"][selected]
+                st.markdown(f"**Per-class metrics — {selected}**")
+                class_metrics = pd.DataFrame.from_dict(selected_result["class_metrics"], orient="index")
+                class_metrics.index.name = "Heart_Risk label"
+                st.dataframe(class_metrics.round(4), width="stretch")
+                cm = selected_result["confusion_matrix"]
                 fig = go.Figure(go.Heatmap(z=cm, x=["Predicted 0", "Predicted 1"],
                                            y=["Actual 0", "Actual 1"], text=cm,
                                            texttemplate="%{text}", colorscale="Blues"))

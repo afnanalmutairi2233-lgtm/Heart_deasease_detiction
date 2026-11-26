@@ -76,6 +76,10 @@ class HeartAnalysisTests(unittest.TestCase):
         self.assertEqual(result["rows_removed_as_exact_duplicates_for_evaluation"], 2)
         self.assertEqual(len(result["y_test"]), 20)
         self.assertEqual(set(result["results"]), {"Random Forest", "Linear SVM"})
+        for model_result in result["results"].values():
+            self.assertEqual(set(model_result["class_metrics"]), {0, 1})
+            for metrics in model_result["class_metrics"].values():
+                self.assertEqual(set(metrics), {"Precision", "Recall", "F1-score", "Support"})
 
 
 if __name__ == "__main__":

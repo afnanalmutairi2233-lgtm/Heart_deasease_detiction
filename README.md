@@ -58,6 +58,15 @@ Corrected results on the bundled dataset use 20,000 unique records selected by s
 | Random Forest | 0.9903 | 0.9914 | 0.9889 | 0.9901 |
 | Linear SVM | 0.9920 | 0.9914 | 0.9924 | 0.9919 |
 
+The Precision, Recall, and F1 columns above refer to label 1. Per-class metrics on the same held-out sample are:
+
+| Model | Label | Precision | Recall | F1-score | Support |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| Random Forest | 0 | 0.9892 | 0.9916 | 0.9904 | 2,025 |
+| Random Forest | 1 | 0.9914 | 0.9889 | 0.9901 | 1,975 |
+| Linear SVM | 0 | 0.9926 | 0.9916 | 0.9921 | 2,025 |
+| Linear SVM | 1 | 0.9914 | 0.9924 | 0.9919 | 1,975 |
+
 These scores measure agreement with the supplied labels only. Their unusually high values are not evidence of clinical accuracy; the label-generation process is undocumented, and age and several recorded fields are strongly associated with the label. No independent validation set or clinical ground truth is provided.
 
 ## Dashboard Features

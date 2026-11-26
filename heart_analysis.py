@@ -7,6 +7,7 @@ import pandas as pd
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import (
     accuracy_score,
+    classification_report,
     confusion_matrix,
     f1_score,
     precision_score,
@@ -113,9 +114,25 @@ def train_models(frame, random_state=42, max_rows=20_000):
     for name, estimator in estimators.items():
         estimator.fit(X_train, y_train)
         predictions = estimator.predict(X_test)
+        report = classification_report(
+            y_test,
+            predictions,
+            labels=[0, 1],
+            output_dict=True,
+            zero_division=0,
+        )
         results[name] = {
             "model": estimator,
             "predictions": predictions,
+            "class_metrics": {
+                label: {
+                    "Precision": report[str(label)]["precision"],
+                    "Recall": report[str(label)]["recall"],
+                    "F1-score": report[str(label)]["f1-score"],
+                    "Support": int(report[str(label)]["support"]),
+                }
+                for label in (0, 1)
+            },
             "metrics": {
                 "Accuracy": accuracy_score(y_test, predictions),
                 "Precision": precision_score(y_test, predictions, zero_division=0),
